@@ -1,14 +1,14 @@
 export interface IMailPayload {
-  template: keyof typeof EmailTemplates;
-  payload: PaylaodType;
+    template: keyof typeof EmailTemplates;
+    payload: PaylaodType;
 }
 
 enum EmailTemplates {
-  POST_UPDATED = 'post-updated',
+    POST_UPDATED = 'post-updated',
 }
 
 interface PaylaodType {
-  emails: string[];
-  subject: string;
-  data: any;
+    emails: string[];
+    subject: string;
+    data: any;
 }

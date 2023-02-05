@@ -5,17 +5,12 @@ import { PrismaService } from './core/services';
 
 @Controller('health')
 export class HealthController {
-  constructor(
-    private healthCheckService: HealthCheckService,
-    private prismaService: PrismaService,
-  ) {}
+    constructor(private healthCheckService: HealthCheckService, private prismaService: PrismaService) {}
 
-  @Get()
-  @HealthCheck()
-  @Public()
-  public async getHealth() {
-    return this.healthCheckService.check([
-      () => this.prismaService.$queryRaw`SELECT 1`,
-    ]);
-  }
+    @Get()
+    @HealthCheck()
+    @Public()
+    public async getHealth() {
+        return this.healthCheckService.check([() => this.prismaService.$queryRaw`SELECT 1`]);
+    }
 }

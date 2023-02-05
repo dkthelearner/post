@@ -13,61 +13,58 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './core/guards';
 
 @Module({
-  imports: [
-    ConfigModule,
-    I18nModule.forRoot({
-      fallbackLanguage: 'en',
-      loaderOptions: {
-        path: join(__dirname, '/i18n/'),
-        watch: true,
-      },
-      resolvers: [
-        { use: QueryResolver, options: ['lang'] },
-        AcceptLanguageResolver,
-      ],
-    }),
-    TerminusModule,
-    ClientsModule.registerAsync([
-      {
-        name: 'AUTH_SERVICE',
-        imports: [ConfigModule],
-        useFactory: async (configService: ConfigService) => ({
-          transport: Transport.RMQ,
-          options: {
-            urls: [`${configService.get('rb_url')}`],
-            queue: `${configService.get('auth_queue')}`,
-            queueOptions: {
-              durable: false,
+    imports: [
+        ConfigModule,
+        I18nModule.forRoot({
+            fallbackLanguage: 'en',
+            loaderOptions: {
+                path: join(__dirname, '/i18n/'),
+                watch: true,
             },
-          },
+            resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
         }),
-        inject: [ConfigService],
-      },
-      {
-        name: 'MAIL_SERVICE',
-        imports: [ConfigModule],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.RMQ,
-          options: {
-            urls: [`${configService.get('rb_url')}`],
-            queue: `${configService.get('mailer_queue')}`,
-            queueOptions: {
-              durable: false,
+        TerminusModule,
+        ClientsModule.registerAsync([
+            {
+                name: 'AUTH_SERVICE',
+                imports: [ConfigModule],
+                useFactory: async (configService: ConfigService) => ({
+                    transport: Transport.RMQ,
+                    options: {
+                        urls: [`${configService.get('rb_url')}`],
+                        queue: `${configService.get('auth_queue')}`,
+                        queueOptions: {
+                            durable: false,
+                        },
+                    },
+                }),
+                inject: [ConfigService],
             },
-          },
-        }),
-        inject: [ConfigService],
-      },
-    ]),
-  ],
-  controllers: [AppController, HealthController],
-  providers: [
-    AppService,
-    PrismaService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-  ],
+            {
+                name: 'MAIL_SERVICE',
+                imports: [ConfigModule],
+                useFactory: (configService: ConfigService) => ({
+                    transport: Transport.RMQ,
+                    options: {
+                        urls: [`${configService.get('rb_url')}`],
+                        queue: `${configService.get('mailer_queue')}`,
+                        queueOptions: {
+                            durable: false,
+                        },
+                    },
+                }),
+                inject: [ConfigService],
+            },
+        ]),
+    ],
+    controllers: [AppController, HealthController],
+    providers: [
+        AppService,
+        PrismaService,
+        {
+            provide: APP_GUARD,
+            useClass: JwtAuthGuard,
+        },
+    ],
 })
 export class AppModule {}
