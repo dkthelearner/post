@@ -5,7 +5,7 @@
         "assets": [
             {
                 "include": "i18n",
-                "outDir": "dist"
+                "outDir": "dist/src"
             }
         ]
     }
